@@ -9,6 +9,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <!-- Your ULTRAKILL folder. If it isn't one of these: dotnet build -c Release -p:GameDir="X:\path\to\ULTRAKILL" -->
+    <GameDir Condition="'$(GameDir)' == '' And Exists('U:\games\ULTRAKILL')">U:\games\ULTRAKILL</GameDir>
     <GameDir Condition="'$(GameDir)' == '' And Exists('D:\Games\ULTRAKILL Killcraft\BepInEx')">D:\Games\ULTRAKILL Killcraft</GameDir>
     <GameDir Condition="'$(GameDir)' == '' And Exists('D:\SteamLibrary\steamapps\common\ULTRAKILL')">D:\SteamLibrary\steamapps\common\ULTRAKILL</GameDir>
     <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\ULTRAKILL</GameDir>

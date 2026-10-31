@@ -71,6 +71,11 @@ namespace Killcraft
             DigIntoLevels = Config.Bind("Minecraft", "DigIntoLevels", false,
                 "Let explosions and pickaxes dig holes into ULTRAKILL's level geometry (SkyCraft's 'destruction'). ULTRAKILL can't show those holes, " +
                 "so they leave Minecraft blocks hanging in the air. Applied when Minecraft starts.");
+            DigIntoLevels.SettingChanged += (_, __) =>
+            {
+                McSave.UpdateDestruction(DigIntoLevels.Value);
+                Collision.RefreshAll();
+            };
             FreshWorld = Config.Bind("Minecraft", "FreshWorldEachLaunch", true,
                 "Start every session with a fresh Minecraft world: blocks you placed, dropped items and holes are gone, and your inventory is " +
                 "the starting kit again (weapons, armour, building blocks, TNT). Off: everything stays from one session to the next.");
@@ -122,6 +127,14 @@ namespace Killcraft
             {
                 Log.LogError("Killcraft can't create its shared memory; Minecraft won't connect");
                 return;
+            }
+            try
+            {
+                McSave.UpdateDestruction(DigIntoLevels.Value);
+            }
+            catch (Exception e)
+            {
+                Log.LogWarning($"Couldn't apply DigIntoLevels: {e.Message}");
             }
             if (StartMinecraft.Value)
             {

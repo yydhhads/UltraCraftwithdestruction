@@ -107,11 +107,19 @@ namespace Killcraft
             queue.Add(new RegionJob { Clear = true, Epoch = newEpoch });
         }
 
+        private static uint TriFlags => Plugin.DigIntoLevels != null && Plugin.DigIntoLevels.Value ? Proto.TriDiggable : 0u;
+
         public static void ForgetMeshes()
         {
             meshCache.Clear();
             colliderCache.Clear();
             loggedUnreadable.Clear();
+        }
+
+        public static void RefreshAll()
+        {
+            ForgetMeshes();
+            Reset(epoch + 1);
         }
 
         private static void EnsureWorker()
@@ -391,7 +399,7 @@ namespace Killcraft
             {
                 var v = new float[9];
                 Array.Copy(ct.Verts, t * 9, v, 0, 9);
-                job.Tris.Add(new Tri { V = v });
+                job.Tris.Add(new Tri { V = v, Flags = TriFlags });
             }
         }
 
@@ -593,8 +601,8 @@ namespace Killcraft
                 for (int x = 0; x < ix1 - ix0; x++)
                 {
                     Vector3 a = P(x, z), b = P(x + 1, z), c = P(x, z + 1), d = P(x + 1, z + 1);
-                    job.Tris.Add(new Tri { V = new[] { a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z }, Flags = Proto.TriTerrain });
-                    job.Tris.Add(new Tri { V = new[] { b.x, b.y, b.z, d.x, d.y, d.z, c.x, c.y, c.z }, Flags = Proto.TriTerrain });
+                    job.Tris.Add(new Tri { V = new[] { a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z }, Flags = Proto.TriTerrain | TriFlags });
+                    job.Tris.Add(new Tri { V = new[] { b.x, b.y, b.z, d.x, d.y, d.z, c.x, c.y, c.z }, Flags = Proto.TriTerrain | TriFlags });
                 }
             }
         }
@@ -674,7 +682,7 @@ namespace Killcraft
                     {
                         (q, r) = (r, q);
                     }
-                    all.Add(new Tri { V = new[] { p.x, p.y, p.z, q.x, q.y, q.z, r.x, r.y, r.z } });
+                    all.Add(new Tri { V = new[] { p.x, p.y, p.z, q.x, q.y, q.z, r.x, r.y, r.z }, Flags = TriFlags });
                 }
                 void Quad(int i0, int i1, int i2, int i3)
                 {

@@ -254,14 +254,32 @@ namespace Killcraft
             }
         }
 
-        // SkyCraft's "Skyrim destruction" setting (its pause menu button): mining and explosions dig
+        public static void UpdateDestruction(bool on)
+        {
+            try
+            {
+                string game = Path.Combine(Launcher.InstallDir, "Prism", "instances", "SkyCraft", ".minecraft");
+                SetDestruction(Path.Combine(game, "config", "skycraft.properties"), on);
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.LogWarning($"Minecraft: couldn't update skycraft.properties: {e.Message}");
+            }
+        }
+
+        // SkyCraft's \"Skyrim destruction\" setting (its pause menu button): mining and explosions dig
         // into the host's geometry. ULTRAKILL can't cut holes in its levels, so it's off by default.
         private static void SetDestruction(string file, bool on)
         {
             var lines = new List<string>(File.Exists(file) ? File.ReadAllLines(file) : new[] { "# SkyCraft" });
             string line = "destruction=" + (on ? "true" : "false");
-            int at = lines.FindIndex(l => l.Trim().StartsWith("destruction="));
-            if (at >= 0 && lines[at].Trim() == line)
+            int at = lines.FindIndex(l =>
+            {
+                string t = l.Trim();
+                return t.StartsWith("destruction=", StringComparison.OrdinalIgnoreCase) ||
+                       t.StartsWith("destruction =", StringComparison.OrdinalIgnoreCase);
+            });
+            if (at >= 0 && lines[at].Trim().Equals(line, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }

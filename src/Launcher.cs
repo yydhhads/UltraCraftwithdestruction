@@ -16,7 +16,7 @@ namespace Killcraft
 
         private static string PluginDir => Path.GetDirectoryName(typeof(Plugin).Assembly.Location);
         private static string Bundle => Path.Combine(PluginDir, "SkyCraft-Minecraft.zip");
-        private static string InstallDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SkyCraft");
+        internal static string InstallDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SkyCraft");
 
         public static bool MinecraftRunning()
         {
@@ -67,10 +67,7 @@ namespace Killcraft
                     {
                         State = Status.SignIn;
                     }
-                    if (bundled)
-                    {
-                        McSave.Prepare(InstallDir);
-                    }
+                    McSave.Prepare(InstallDir);
                     Process.Start(new ProcessStartInfo(program, args) { UseShellExecute = true, WorkingDirectory = Path.GetDirectoryName(program) });
                     Plugin.Log.LogInfo($"Minecraft: started {program} {args}");
                 }

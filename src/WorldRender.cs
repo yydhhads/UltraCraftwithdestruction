@@ -381,6 +381,9 @@ namespace Killcraft
                     case Proto.RenLights:
                         OnLights(p);
                         break;
+                    case Proto.RenDug:
+                        DugGeometry.OnDug(p, bytes);
+                        break;
                     case Proto.RenClearAll:
                         ClearAll();
                         break;
@@ -978,6 +981,7 @@ namespace Killcraft
         public static void ClearAll()
         {
             NetherWorld.Clear();
+            DugGeometry.Clear();
             foreach (Section s in sections.Values)
             {
                 if (s.Go != null)

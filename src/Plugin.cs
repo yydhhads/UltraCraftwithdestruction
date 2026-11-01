@@ -122,7 +122,7 @@ namespace Killcraft
             EnsureHost();
             // ULTRAKILL's scene loader disables every script that isn't in the DontDestroyOnLoad
             // scene, and objects made this early aren't always moved there: re-check on every load.
-            SceneManager.sceneLoaded += (_, __) => EnsureHost();
+            SceneManager.sceneLoaded += (_, __) => { EnsureHost(); DugGeometry.Clear(); };
 
             if (!Link.Create())
             {
